@@ -1,1 +1,1 @@
-export * from './get-stripe-sdk';
+export * from './services';

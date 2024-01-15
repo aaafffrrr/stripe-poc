@@ -1,7 +1,7 @@
 import { config } from '@/config';
 import Stripe from 'stripe';
 
-export function getStripeSDK() {
+export function initStripeSDK() {
   const key = config.STRIPE_SECRET_KEY;
 
   if (!key) {
