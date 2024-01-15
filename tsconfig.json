@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@/config": ["./src/config"]
+      "@/config": ["./src/config"],
+      "@/stripe-server": ["./src/stripe-server"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
