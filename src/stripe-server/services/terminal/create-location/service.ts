@@ -1,8 +1,8 @@
 'use server';
 
-import { generateRandomName } from '@/utils/generate-random-name';
 import { initStripeSDK } from '../../../_core';
-import { generateRandomAddress } from '@/src/utils/generate-random-address';
+import { generateRandomName } from '@/utils/generate-random-name';
+import { generateRandomAddress } from '@/utils/generate-random-address';
 
 type Props = {
   displayName?: string;
