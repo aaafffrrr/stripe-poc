@@ -32,7 +32,8 @@ export async function createPaymentIntent({
     application_fee_amount: fee,
     currency: 'cad',
     payment_method_types: ['card_present', 'interac_present'],
-    capture_method: 'manual',
+    // capture_method: 'manual',
+    capture_method: 'automatic',
     receipt_email: 'christopher.montoya@telus.com',
     metadata: {
       source: 'poc-stripe-terminal',

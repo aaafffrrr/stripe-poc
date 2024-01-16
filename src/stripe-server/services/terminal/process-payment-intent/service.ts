@@ -26,20 +26,24 @@ export async function processPaymentIntent({
     attempt++;
     try {
       let reader;
+
+      console.debug(`[ProcessPaymentIntent] Starting`);
       reader = await stripe.terminal.readers.processPaymentIntent(readerId, {
         payment_intent: paymentIntentId,
       });
 
-      reader = await stripe.testHelpers.terminal.readers.presentPaymentMethod(
-        reader.id
+      // This code is for simulated reader only
+      // console.debug(
+      //   `[ProcessPaymentIntent] Presenting payment method to reader`
+      // );
+      // reader = await stripe.testHelpers.terminal.readers.presentPaymentMethod(
+      //   reader.id
+      // );
+
+      console.debug(
+        `[ProcessPaymentIntent] Process completed. Returning the reader ${reader}`
       );
-
-      const intent = await stripe.paymentIntents.capture(paymentIntentId);
-
-      return {
-        reader,
-        intent,
-      };
+      return reader;
     } catch (error: any) {
       console.log(error);
       switch (error.code) {

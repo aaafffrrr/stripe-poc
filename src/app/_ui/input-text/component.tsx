@@ -54,8 +54,8 @@ export function InputText({
     }
   };
 
-  const disabledStyle = `bg-ui-grey-light cursor-not-allowed`;
-  const rootStyle = `relative rounded-lg border border-ui-grey p-2 px-4 ${className} ${
+  const disabledStyle = `bg-slate-800 cursor-not-allowed`;
+  const rootStyle = `relative rounded-lg border border-slate-300 p-2 px-4 ${className} ${
     disabled ? disabledStyle : ''
   }`;
 
@@ -77,7 +77,7 @@ export function InputText({
       />
       <label
         htmlFor={inputId}
-        className={`absolute left-4 text-base text-ui-grey transition-all ${
+        className={`absolute left-4 text-base text-slate-500 transition-all ${
           isFocused || hasValue ? 'top-1 !text-xs' : 'top-4'
         }
           ${disabled ? `cursor-not-allowed` : ''}
