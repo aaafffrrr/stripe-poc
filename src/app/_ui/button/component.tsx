@@ -25,7 +25,7 @@ export function Button({ children, callback = () => {} }: Props) {
 
   return (
     <button
-      className='w-full px-4 py-2 bg-violet-500 rounded-lg uppercase cursor-pointer'
+      className='w-full px-4 py-2 bg-violet-500 rounded-lg uppercase cursor-pointer text-white'
       onClick={handleClick}
     >
       {children}
