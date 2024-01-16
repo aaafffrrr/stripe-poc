@@ -1,6 +1,6 @@
 'use client';
 
-import { createLocation } from '@/src/stripe-server';
+import { createLocation } from '@/stripe-server';
 import { Button } from '@/ui/button';
 
 export function ButtonCreatePaymentTerminalLocation() {
