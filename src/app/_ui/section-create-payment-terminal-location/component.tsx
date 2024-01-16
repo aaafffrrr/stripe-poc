@@ -1,8 +1,6 @@
-import { Button } from '@/ui/button';
 import { ButtonCreatePaymentTerminalLocation } from '@/ui/button-create-payment-terminal-location';
 
 export function SectionCreatePaymentTerminalLocation() {
-  console.debug(`[SectionCreatePaymentTerminalLocation] Component started`);
   const tags = ['Stripe', 'Location'];
 
   return (

@@ -11,7 +11,6 @@ export function Button({ children, callback = () => {} }: Props) {
 
   const handleClick = (e: any) => {
     e.preventDefault();
-    console.debug(`handleClick triggered`);
     setLoading(true);
     callback(() => setLoading(false));
   };

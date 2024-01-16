@@ -5,7 +5,6 @@ import { Button } from '@/ui/button';
 
 export function ButtonCreatePaymentTerminalLocation() {
   const callback = async (onComplete: () => void) => {
-    console.debug(`callback called!`);
     try {
       const location = await createLocation({});
       onComplete();
@@ -13,11 +12,8 @@ export function ButtonCreatePaymentTerminalLocation() {
       if (!location) {
         console.error(`Something went wrong while creating a new location`);
       }
-
-      console.log(`New location created is ${JSON.stringify(location)}`);
     } catch (error) {
       onComplete();
-
       console.error(error);
     }
   };
