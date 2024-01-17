@@ -23,6 +23,8 @@ export async function findOnePaymentIntent({ id }: Props) {
       console.error(`No payment intent found with the id ${id}`);
       return null;
     }
+
+    return intent;
   } catch (error) {
     console.error(
       `Something went wrong while retrieving payment intent with id ${id}.`

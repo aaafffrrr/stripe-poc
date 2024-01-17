@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TagsList } from '@/ui/tags-list';
 import { Button } from '@/ui/button';
 import { InputText } from '@/ui/input-text';
@@ -9,6 +9,7 @@ import {
   createPaymentIntent,
   processPaymentIntent,
 } from '@/stripe-server';
+import { findOnePaymentIntent } from '@/stripe-server';
 
 export function SectionSendPaymentRequestToTerminal() {
   const tags = ['Stripe', 'Payment'];
@@ -31,6 +32,7 @@ export function SectionSendPaymentRequestToTerminal() {
 function Form() {
   const [amount, setAmount] = useState(0);
   const [isReaderBusy, setIsReaderBusy] = useState(false);
+  const [paymentIntent, setPaymentIntent] = useState<any>();
   const readerId = 'tmr_FaOk9QQmYa6bnu';
 
   const actionCreatePaymentIntent = async (amount: number) => {
@@ -55,7 +57,10 @@ function Form() {
     }
   };
 
-  const actionProcessPaymentIntent = async (paymentIntentId: string) => {
+  const actionProcessPaymentIntent = async (
+    readerId: string,
+    paymentIntentId: string
+  ) => {
     try {
       const reader = await processPaymentIntent({
         readerId,
@@ -66,6 +71,7 @@ function Form() {
         console.error(
           `Something went wrong while processing payment ${paymentIntentId} with reader ${readerId}`
         );
+        return null;
       }
 
       console.debug(
@@ -80,7 +86,6 @@ function Form() {
 
   const callback = async (onComplete: () => void) => {
     try {
-      setIsReaderBusy(true);
       const paymentIntent = await actionCreatePaymentIntent(amount);
 
       if (!paymentIntent) {
@@ -89,7 +94,21 @@ function Form() {
         return;
       }
 
-      const reader = await actionProcessPaymentIntent(paymentIntent.id);
+      const reader = await actionProcessPaymentIntent(
+        readerId,
+        paymentIntent.id
+      );
+
+      if (!reader) {
+        console.error(
+          `Something went wrong while processing the payment intent`
+        );
+        onComplete();
+        return;
+      }
+
+      setPaymentIntent(paymentIntent);
+      setIsReaderBusy(true);
       onComplete();
 
       console.debug(
@@ -104,30 +123,13 @@ function Form() {
   };
 
   if (isReaderBusy) {
-    const callback = async () => {
-      await cancelActionOnReader({ readerId });
-      setIsReaderBusy(false);
-    };
-
     return (
-      <div className='flex flex-col gap-4'>
-        <div className='flex flex-col gap-4 py-4 text-center'>
-          <p className='text-slate-400 text-lg'>Total</p>
-          <p className='text-3xl font-semibold text-slate-100'>CA${amount}</p>
-          <p className='text-slate-400 text-sm'>
-            Please give the terminal reader to your customer so they can make
-            the payment.
-          </p>
-        </div>
-        <div className='flex flex-row justify-end'>
-          <button
-            className='text-red-400 rounded-lg uppercase text-sm cursor-pointer text-right'
-            onClick={callback}
-          >
-            Cancel transaction
-          </button>
-        </div>
-      </div>
+      <SectionReaderInUse
+        readerId={readerId}
+        paymentIntentId={paymentIntent.id}
+        amount={amount}
+        onClose={() => setIsReaderBusy(false)}
+      />
     );
   }
 
@@ -146,5 +148,73 @@ function Form() {
       </div>
       <Button callback={callback}>Request payment</Button>
     </form>
+  );
+}
+
+function SectionReaderInUse({
+  amount,
+  readerId,
+  paymentIntentId,
+  onClose,
+}: {
+  amount: number;
+  readerId: string;
+  paymentIntentId: string;
+  onClose: () => void;
+}) {
+  const handleClickOnCancelTransaction = async () => {
+    console.debug(
+      `Cancel transaction manually clicked. We can clear the reader.`
+    );
+    await cancelActionOnReader({ readerId });
+    onClose();
+  };
+
+  useEffect(() => {
+    // Every second, check the state of the payment intent processed by the reader
+    const interval = setInterval(async () => {
+      console.debug(
+        `[Interval job] Checking the current state of paymentIntent ${paymentIntentId}`
+      );
+      const paymentIntent = await findOnePaymentIntent({ id: paymentIntentId });
+
+      if (!paymentIntent) {
+        return null;
+      }
+
+      if (paymentIntent.status === 'succeeded') {
+        console.debug(
+          `Payment intent ${paymentIntent.id} is succeeded. We can clear the reader.`
+        );
+        await cancelActionOnReader({ readerId });
+        onClose();
+      }
+    }, 1000);
+
+    //Clearing the interval
+    return () => clearInterval(interval);
+  }, [readerId, paymentIntentId, onClose]);
+
+  return (
+    <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 py-4 text-center'>
+        <p className='text-slate-400 text-lg'>Total</p>
+        <p className='text-3xl font-semibold text-slate-800 dark:text-slate-100'>
+          CA${amount}
+        </p>
+        <p className='text-slate-400 text-sm'>
+          Please give the terminal reader to your customer so they can make the
+          payment.
+        </p>
+      </div>
+      <div className='flex flex-row justify-end'>
+        <button
+          className='text-red-400 rounded-lg uppercase text-sm cursor-pointer text-right'
+          onClick={handleClickOnCancelTransaction}
+        >
+          Cancel transaction
+        </button>
+      </div>
+    </div>
   );
 }
