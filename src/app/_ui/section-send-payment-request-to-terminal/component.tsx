@@ -103,9 +103,22 @@ function Form() {
         return;
       }
 
-      console.debug(reader.status);
+      console.debug(reader);
       if (reader.status === 'offline') {
         const message = `The terminal is offline. Please turn it on.`;
+        console.error(message);
+        setErrorMessage(message);
+        onComplete();
+        return;
+      }
+
+      // TODO: Does stripe provide a ENUM of action status?
+      if (
+        reader.action &&
+        reader.action.status &&
+        reader.action.status === 'in_progress'
+      ) {
+        const message = `The terminal is already in use. Please wait for the current transaction to complete or cancel it.`;
         console.error(message);
         setErrorMessage(message);
         onComplete();
