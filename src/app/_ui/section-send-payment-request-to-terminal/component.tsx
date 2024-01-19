@@ -7,9 +7,11 @@ import { InputText } from '@/ui/input-text';
 import {
   cancelActionOnReader,
   createPaymentIntent,
+  findOneReader,
   processPaymentIntent,
 } from '@/stripe-server';
 import { findOnePaymentIntent } from '@/stripe-server';
+import Stripe from 'stripe';
 
 export function SectionSendPaymentRequestToTerminal() {
   const tags = ['Stripe', 'Payment'];
@@ -33,13 +35,14 @@ function Form() {
   const [amount, setAmount] = useState(0);
   const [isReaderBusy, setIsReaderBusy] = useState(false);
   const [paymentIntent, setPaymentIntent] = useState<any>();
+  const [errorMessage, setErrorMessage] = useState('');
   const readerId = 'tmr_FaOk9QQmYa6bnu';
 
   const actionCreatePaymentIntent = async (amount: number) => {
     try {
       const cents = amount * 100;
       const destination = 'acct_1OZFm0AjiEy1bJp6'; // Stripe connect account ID (this one is linked to Guaca Shop account)
-      const fee = cents * 0.15;
+      const fee = cents * 0.2;
       const paymentIntent = await createPaymentIntent({
         amount: cents,
         stripeAccountDestinationTransfer: destination,
@@ -62,12 +65,12 @@ function Form() {
     paymentIntentId: string
   ) => {
     try {
-      const reader = await processPaymentIntent({
+      const lastActionProcessedByReader = await processPaymentIntent({
         readerId,
         paymentIntentId,
       });
 
-      if (!reader) {
+      if (!lastActionProcessedByReader) {
         console.error(
           `Something went wrong while processing payment ${paymentIntentId} with reader ${readerId}`
         );
@@ -75,9 +78,11 @@ function Form() {
       }
 
       console.debug(
-        `Payment Intent ${paymentIntentId} processed: ${JSON.stringify(reader)}`
+        `Payment Intent ${paymentIntentId} processed: ${JSON.stringify(
+          lastActionProcessedByReader
+        )}`
       );
-      return reader;
+      return lastActionProcessedByReader;
     } catch (error) {
       console.error(error);
       return null;
@@ -85,24 +90,47 @@ function Form() {
   };
 
   const callback = async (onComplete: () => void) => {
-    try {
-      const paymentIntent = await actionCreatePaymentIntent(amount);
+    setErrorMessage('');
 
-      if (!paymentIntent) {
-        console.error(`Something went wrong while creating payment intent`);
+    try {
+      const reader = await findOneReader({ id: readerId });
+
+      if (!reader) {
+        const message = `Please verify that you have the reader ${readerId} added in your dashboard or try again later.`;
+        console.error(message);
+        setErrorMessage(message);
         onComplete();
         return;
       }
 
-      const reader = await actionProcessPaymentIntent(
+      console.debug(reader.status);
+      if (reader.status === 'offline') {
+        const message = `The terminal is offline. Please turn it on.`;
+        console.error(message);
+        setErrorMessage(message);
+        onComplete();
+        return;
+      }
+
+      const paymentIntent = await actionCreatePaymentIntent(amount);
+
+      if (!paymentIntent) {
+        const message = `Something went wrong while creating a payment intent. Please try again later.`;
+        console.error(message);
+        setErrorMessage(message);
+        onComplete();
+        return;
+      }
+
+      const lastActionProcessedByReader = await actionProcessPaymentIntent(
         readerId,
         paymentIntent.id
       );
 
-      if (!reader) {
-        console.error(
-          `Something went wrong while processing the payment intent`
-        );
+      if (!lastActionProcessedByReader) {
+        const message = `Something went wrong while processing the payment. Please try again later.`;
+        console.error(message);
+        setErrorMessage(message);
         onComplete();
         return;
       }
@@ -113,7 +141,7 @@ function Form() {
 
       console.debug(
         `Payment Intent ${paymentIntent.id} processed: ${JSON.stringify(
-          reader
+          lastActionProcessedByReader
         )}`
       );
     } catch (error) {
@@ -146,6 +174,12 @@ function Form() {
           onChangeValue={(value) => setAmount(+value)}
         />
       </div>
+      {errorMessage.length > 0 && (
+        <div className='p-4 rounded-lg gap-1 bg-red-200 text-red-900 flex flex-col'>
+          <h3 className='font-semibold'>An error has occured</h3>
+          <p className='text-sm'>{errorMessage}</p>
+        </div>
+      )}
       <Button callback={callback}>Request payment</Button>
     </form>
   );

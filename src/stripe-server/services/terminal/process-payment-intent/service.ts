@@ -43,7 +43,7 @@ export async function processPaymentIntent({
       console.debug(
         `[ProcessPaymentIntent] Process completed. Returning the reader ${reader}`
       );
-      return reader;
+      return reader.action;
     } catch (error: any) {
       console.log(error);
       switch (error.code) {
