@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'POC Stripe Terminal',
   description: 'A small app to collect payment with Stripe Terminal',
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

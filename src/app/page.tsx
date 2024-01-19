@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { SectionSendPaymentRequestToTerminal } from '@/ui/section-send-payment-request-to-terminal';
 
 export default function Home() {
