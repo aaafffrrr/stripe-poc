@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <main className='flex min-h-screen flex-col-reverse justify-between py-24 lg:flex-col lg:justify-start lg:gap-16'>
+        <main className='flex min-h-screen flex-col-reverse justify-between py-24 lg:flex-col lg:justify-start lg:gap-16 lg:max-w-2xl lg:mx-auto'>
           <div className='z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex'>
             <p className='fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30'>
               <span className='font-bold'>POC Stripe Terminal</span>
@@ -43,7 +43,7 @@ export default function RootLayout({
             </div>
           </div>
 
-          <div className='lg:max-w-5xl lg:w-full'>{children}</div>
+          <div className='lg:max-w-5xl lg:w-full md:mx-auto'>{children}</div>
         </main>
       </body>
     </html>
