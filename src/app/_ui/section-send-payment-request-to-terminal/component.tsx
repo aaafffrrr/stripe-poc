@@ -11,7 +11,6 @@ import {
   processPaymentIntent,
 } from '@/stripe-server';
 import { findOnePaymentIntent } from '@/stripe-server';
-import Stripe from 'stripe';
 
 export function SectionSendPaymentRequestToTerminal() {
   const tags = ['Stripe', 'Payment'];
@@ -36,12 +35,13 @@ function Form() {
   const [isReaderBusy, setIsReaderBusy] = useState(false);
   const [paymentIntent, setPaymentIntent] = useState<any>();
   const [errorMessage, setErrorMessage] = useState('');
-  const readerId = 'tmr_FaOk9QQmYa6bnu';
+  const readerId = process.env.NEXT_PUBLIC_STRIPE_TERMINAL_READER_ID as string;
 
   const actionCreatePaymentIntent = async (amount: number) => {
     try {
       const cents = amount * 100;
-      const destination = 'acct_1OZFm0AjiEy1bJp6'; // Stripe connect account ID (this one is linked to Guaca Shop account)
+      const destination = process.env
+        .NEXT_PUBLIC_STRIPE_CONNECT_ACCOUNT_ID as string;
       const fee = cents * 0.2;
       const paymentIntent = await createPaymentIntent({
         amount: cents,
@@ -112,7 +112,7 @@ function Form() {
         return;
       }
 
-      // TODO: Does stripe provide a ENUM of action status?
+      // TODO: Does stripe provide an ENUM of action status?
       if (
         reader.action &&
         reader.action.status &&

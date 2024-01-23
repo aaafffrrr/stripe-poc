@@ -4,7 +4,7 @@ import {
   StripeWebhookEventsEnum,
 } from '@/stripe-server';
 
-// Example to listen Wehhook events from Stripe API. This code is not yet implemented.
+// Example to listen Wehhook events from Stripe API. This code is not used in the current demo app. I added here as example only.
 export async function POST(req: Request) {
   const event = await req.json();
 

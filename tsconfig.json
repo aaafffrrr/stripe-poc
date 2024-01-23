@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/config": ["./src/config"],
+      "@/config/server": ["./src/config/server"],
       "@/stripe-server": ["./src/stripe-server"],
       "@/ui/*": ["./src/app/_ui/*"],
       "@/utils/*": ["./src/utils/*"]

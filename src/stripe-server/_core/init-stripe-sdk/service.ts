@@ -1,8 +1,8 @@
-import { config } from '@/config';
+import { ServerConfig } from '@/config/server';
 import Stripe from 'stripe';
 
 export function initStripeSDK() {
-  const key = config.STRIPE_SECRET_KEY;
+  const key = ServerConfig.STRIPE_SECRET_KEY;
 
   if (!key) {
     console.error(`Stripe secret key is missing`);
