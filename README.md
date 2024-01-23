@@ -20,10 +20,23 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Required env file (local development w/ SQL Lite)
+## Required Stripe configuration
+
+In order to use this demo app, you should have:
+
+- A Stripe account.
+- The feature Stripe Connect enabled.
+- Create a Stripe Connect account. It represents the store that will collect payments with the terminal. Save the ID as env var.
+- Add a location to the Stripe Connect account.
+- Add a terminal reader to the location. Save the ID as env var.
+
+## Required env file
 
 ```.env.local
-DATABASE_URL="file./database/dev.db"
+DATABASE_URL="file./database/dev.db" # local development w/ SQL Lite
+STRIPE_SECRET_KEY=sk_test_123456789 # Add your Stripe developer key
+NEXT_PUBLIC_STRIPE_TERMINAL_READER_ID=tmr_123456789 # Add the ID of the stripe terminal reader
+NEXT_PUBLIC_STRIPE_CONNECT_ACCOUNT_ID=acct_123456789 # Add the ID of the stripe connect account (the store)
 ```
 
 ## Learn More
