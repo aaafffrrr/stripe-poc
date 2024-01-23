@@ -30,9 +30,9 @@ In order to use this demo app, you should have:
 - Add a location to the Stripe Connect account.
 - Add a terminal reader to the location. Save the ID as env var.
 
-## Required env file
+## Required env file (.env.local)
 
-```.env.local
+```.env
 DATABASE_URL="file./database/dev.db" # local development w/ SQL Lite
 STRIPE_SECRET_KEY=sk_test_123456789 # Add your Stripe developer key
 NEXT_PUBLIC_STRIPE_TERMINAL_READER_ID=tmr_123456789 # Add the ID of the stripe terminal reader
