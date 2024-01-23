@@ -1,6 +1,7 @@
 'use server';
 
 import { initStripeSDK } from '../../../_core';
+import { ServerConfig } from '@/config/server';
 
 type Props = {
   amount: number; // in cents
@@ -24,6 +25,7 @@ export async function createPaymentIntent({
   // 'card_present'.
   // To automatically capture funds when a charge is authorized,
   // set `capture_method` to `automatic`.
+  const email = ServerConfig.DEVELOPER_EMAIL;
   const intent = await stripe.paymentIntents.create({
     amount,
     transfer_data: {
@@ -34,11 +36,10 @@ export async function createPaymentIntent({
     payment_method_types: ['card_present', 'interac_present'],
     // capture_method: 'manual',
     capture_method: 'automatic',
-    receipt_email: 'christopher.montoya@telus.com',
+    receipt_email: email,
     metadata: {
       source: 'poc-stripe-terminal',
-      context:
-        'Collect payment with a Stripe Terminal. POC from Christopher (christopher.montoya@telus.com)',
+      context: `Collect payment with a Stripe Terminal. POC from Christopher (${email})`,
     },
   });
 

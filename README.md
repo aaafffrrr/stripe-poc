@@ -34,6 +34,7 @@ In order to use this demo app, you should have:
 
 ```.env
 DATABASE_URL="file./database/dev.db" # local development w/ SQL Lite
+DEVELOPER_EMAIL=name@email.com # To receive Stripe receipt (live mode only I guess)
 STRIPE_SECRET_KEY=sk_test_123456789 # Add your Stripe developer key
 NEXT_PUBLIC_STRIPE_TERMINAL_READER_ID=tmr_123456789 # Add the ID of the stripe terminal reader
 NEXT_PUBLIC_STRIPE_CONNECT_ACCOUNT_ID=acct_123456789 # Add the ID of the stripe connect account (the store)

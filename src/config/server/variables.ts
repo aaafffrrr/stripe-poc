@@ -1,5 +1,6 @@
 type EnvVariables = {
   STRIPE_SECRET_KEY: string;
+  DEVELOPER_EMAIL: string;
 };
 
 type Options = {
@@ -25,6 +26,7 @@ const getEnvVariable = (
 
 const config: EnvVariables = {
   STRIPE_SECRET_KEY: getEnvVariable('STRIPE_SECRET_KEY'),
+  DEVELOPER_EMAIL: getEnvVariable('DEVELOPER_EMAIL'),
 };
 
 export default config;
